@@ -8,6 +8,17 @@ variable "slack_webhook_url" {
 
 variable "source_package" {
   description = "Path of Lambda package zip"
+  default     = ""
+}
+
+variable "s3_bucket" {
+  description = "S3 bucket that Lambda package zip can be found in"
+  default     = ""
+}
+
+variable "s3_key" {
+  description = "S3 key that Lambda package zip can be found at"
+  default     = ""
 }
 
 variable "sns_topic_arn" {
