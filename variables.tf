@@ -27,5 +27,5 @@ variable "sns_topic_arn" {
 
 variable "tags" {
   description = "Map of tags to apply to AWS resources"
-  type        = "map"
+  type        = map
 }
