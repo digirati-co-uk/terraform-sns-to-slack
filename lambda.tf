@@ -19,7 +19,7 @@ resource "aws_lambda_permission" "allow_sns_to_call_sns_to_slack_file" {
   count         = length(var.source_package) > 0 ? 1 : 0
   statement_id  = "AllowExecutionFromSNS"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.sns_to_slack_file.function_name
+  function_name = join("", aws_lambda_function.sns_to_slack_file.*.function_name)
   principal     = "sns.amazonaws.com"
 }
 
