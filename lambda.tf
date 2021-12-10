@@ -1,12 +1,12 @@
 resource "aws_lambda_function" "sns_to_slack_file" {
-  count            = "${length(var.source_package) > 0 ? 1 : 0}"
+  count            = length(var.source_package) > 0 ? 1 : 0
   function_name    = "${var.prefix}-sns-to-slack"
   handler          = "main.lambda_handler"
   runtime          = "python3.9"
-  filename         = "${var.source_package}"
-  source_code_hash = "${base64sha256(file(var.source_package))}"
+  filename         = var.source_package
+  source_code_hash = base64sha256(file(var.source_package))
 
-  role = "${aws_iam_role.sns_to_slack_exec_role.arn}"
+  role = aws_iam_role.sns_to_slack_exec_role.arn
 
   environment {
     variables = {
@@ -16,22 +16,22 @@ resource "aws_lambda_function" "sns_to_slack_file" {
 }
 
 resource "aws_lambda_permission" "allow_sns_to_call_sns_to_slack_file" {
-  count         = "${length(var.source_package) > 0 ? 1 : 0}"
+  count         = length(var.source_package) > 0 ? 1 : 0
   statement_id  = "AllowExecutionFromSNS"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.sns_to_slack_file.function_name}"
+  function_name = aws_lambda_function.sns_to_slack_file.function_name
   principal     = "sns.amazonaws.com"
 }
 
 resource "aws_lambda_function" "sns_to_slack_s3" {
-  count         = "${length(var.source_package) > 0 ? 0 : 1}"
+  count         = length(var.source_package) > 0 ? 0 : 1
   function_name = "${var.prefix}-sns-to-slack"
   handler       = "main.lambda_handler"
   runtime       = "python3.9"
-  s3_bucket     = "${var.s3_bucket}"
-  s3_key        = "${var.s3_key}"
+  s3_bucket     = var.s3_bucket
+  s3_key        = var.s3_key
 
-  role = "${aws_iam_role.sns_to_slack_exec_role.arn}"
+  role = aws_iam_role.sns_to_slack_exec_role.arn
 
   environment {
     variables = {
@@ -41,9 +41,9 @@ resource "aws_lambda_function" "sns_to_slack_s3" {
 }
 
 resource "aws_lambda_permission" "allow_sns_to_call_sns_to_slack_s3" {
-  count         = "${length(var.source_package) > 0 ? 0 : 1}"
+  count         = length(var.source_package) > 0 ? 0 : 1
   statement_id  = "AllowExecutionFromSNS"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.sns_to_slack_s3.function_name}"
+  function_name = aws_lambda_function.sns_to_slack_s3.function_name
   principal     = "sns.amazonaws.com"
 }
